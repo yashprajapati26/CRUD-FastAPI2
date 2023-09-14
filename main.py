@@ -19,6 +19,12 @@ def get_db():
     finally:
         db.close()
 
+
+@app.get("/")
+def index():
+    return "Welcome To FastAPI Demo"
+
+
 # users routes 
 
 @app.post("/users/", response_model=schemas.User)

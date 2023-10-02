@@ -3,13 +3,25 @@ from pydantic import BaseModel
 from typing import List
 from fastapi import Depends, FastAPI, HTTPException
 import crud, models, schemas
+from models import User, Item
 from db import SessionLocal, engine
 from sqlalchemy.orm import Session
-
+from sqladmin import Admin, ModelView
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+admin = Admin(app, engine)
 
+# Here register our model in sqlAdmin 
+class UserAdmin(ModelView, model=User):
+    column_list = [User.id, User.email, User.is_active]
+
+class ItemAdmin(ModelView, model=Item):
+    column_list = [Item.id, Item.title, Item.description, Item.owner_id]
+
+ # add on dashboard
+admin.add_view(UserAdmin)
+admin.add_view(ItemAdmin)
 
 # Dependency
 def get_db():
